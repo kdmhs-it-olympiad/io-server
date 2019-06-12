@@ -13,3 +13,4 @@ def init_extensions(app):
     return db
 
 
+__import__('api.model.calender')
