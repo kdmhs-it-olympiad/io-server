@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+flake8 = "*"
+neovim = "*"
+
+[packages]
+flask = "1.0.3"
+flask-restful = "0.3.7"
+alembic = "1.0.10"
+typing = "3.6.6"
+pymysql = "*"
+flask-sqlalchemy = "*"
+
+[requires]
+python_version = "3.7"
