@@ -6,7 +6,7 @@ from api.model import db
 class CalenderModel(db.Model):
     id = Column(db.Integer, primary_key=True, nullable=False)
 
-    context = Column(db.Integer, nullable=True)
+    context = Column(db.String(32), nullable=True)
 
     begin = Column(db.DateTime, nullable=False)
 

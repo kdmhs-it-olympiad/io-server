@@ -34,4 +34,6 @@ def make_flask_server() -> Server:
         db=db
     )
 
+    __import__('api.resource')
+
     return server
