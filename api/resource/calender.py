@@ -1,14 +1,23 @@
 from datetime import datetime
 
-from flask_restful import Resource, abort
+from flask_restful import Resource, abort, fields, marshal_with
 
 from api import server
 from api.model.calender import CalenderModel
 
 db = server.db
 
+calender_fileds = {
+    'id': fields.Integer,
+    'begin': fields.DateTime,
+    'end': fields.DateTime,
+    'context': fields.String
+}
+
 
 class CalenderResource(Resource):
+
+    @marshal_with(calender_fileds)
     def get(self):
         now_dt = datetime.now()
         now_calender = db.session \
@@ -17,11 +26,5 @@ class CalenderResource(Resource):
             .first()
         if now_calender is None:
             abort(404, message='There is no corresponding calender.')
-        calender = {
-            'id': now_calender.id,
-            'begin': now_calender.begin.strftime("%Y-%m-%d %H:%M:%S"),
-            'end': now_calender.end.strftime("%Y-%m-%d %H:%M:%S"),
-            'context': now_calender.context
-        }
 
-        return calender
+        return now_calender
