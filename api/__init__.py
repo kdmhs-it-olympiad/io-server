@@ -19,8 +19,6 @@ server: Optional[Server] = None
 
 
 def make_flask_server() -> Server:
-    __import__('api.resource')
-
     global server
     if server is not None:
         raise Exception('The server is already initialized')
@@ -35,5 +33,7 @@ def make_flask_server() -> Server:
         flask_api=flask_api,
         db=db
     )
+
+    __import__('api.resource')
 
     return server

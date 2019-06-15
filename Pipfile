@@ -14,6 +14,7 @@ alembic = "1.0.10"
 typing = "3.6.6"
 pymysql = "*"
 flask-sqlalchemy = "*"
+werkzeug = "*"
 
 [requires]
 python_version = "3.7"
