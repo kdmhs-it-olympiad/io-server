@@ -8,13 +8,14 @@ flake8 = "*"
 neovim = "*"
 
 [packages]
-flask = "1.0.3"
-flask-restful = "0.3.7"
-alembic = "1.0.10"
-typing = "3.6.6"
+Flask = "*"
+flask-restful = "*"
+alembic = "*"
+typing = "*"
 pymysql = "*"
 flask-sqlalchemy = "*"
 werkzeug = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
