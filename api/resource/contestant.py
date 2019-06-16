@@ -70,7 +70,7 @@ class ContestantResource(Resource):
 
         password_hash = hashlib.sha256()
         password_hash.update(args.password.encode())
-        password_hash = password_hash.digest().decode()
+        password_hash = password_hash.hexdigest()
 
         contestant = ContestantModel(
             name=args.name,
@@ -86,7 +86,7 @@ class ContestantResource(Resource):
             detail_address=args.detail_address,
             sector=args.sector,
             photo=args.photo.filename,
-            password=args.password_hash,
+            password=password_hash,
             launch_number=args.launch_number
         )
 
