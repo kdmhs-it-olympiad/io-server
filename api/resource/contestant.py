@@ -1,3 +1,4 @@
+import hashlib
 import os
 import uuid
 import werkzeug
@@ -67,6 +68,10 @@ class ContestantResource(Resource):
         args.photo.filename = '{}.{}'.format(str(uuid.uuid4()), args.photo.content_type.split('/')[-1])
         args.photo.save('{}/{}'.format(config.STATIC_FILE_PATH, args.photo.filename))
 
+        password_hash = hashlib.sha256()
+        password_hash.update(args.password.encode())
+        password_hash = password_hash.digest().decode()
+
         contestant = ContestantModel(
             name=args.name,
             gender=args.gender,
@@ -81,7 +86,7 @@ class ContestantResource(Resource):
             detail_address=args.detail_address,
             sector=args.sector,
             photo=args.photo.filename,
-            password=args.password,
+            password=args.password_hash,
             launch_number=args.launch_number
         )
 
