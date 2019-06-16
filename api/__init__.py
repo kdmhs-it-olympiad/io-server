@@ -4,6 +4,7 @@ from typing import NamedTuple, Optional
 
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
 from api import model
@@ -27,6 +28,8 @@ def make_flask_server() -> Server:
     flask_api = Api(flask_app)
 
     db = model.init_extensions(flask_app)
+
+    CORS(flask_app)
 
     server = Server(
         flask_app=flask_app,
