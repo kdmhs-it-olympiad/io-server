@@ -1,4 +1,5 @@
 from datetime import datetime
+from pytz import timezone
 
 from flask_restful import Resource, abort, fields, marshal_with
 
@@ -20,7 +21,7 @@ class CalenderResource(Resource):
 
     @marshal_with(calender_fileds)
     def get(self):
-        now_dt = datetime.now()
+        now_dt = datetime.now(timezone('Asia/Seoul'))
         now_calender = db.session \
             .query(CalenderModel) \
             .filter(now_dt >= CalenderModel.begin, now_dt <= CalenderModel.end, CalenderModel.visable.is_(True)) \

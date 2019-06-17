@@ -1,4 +1,5 @@
 from datetime import datetime
+from pytz import timezone
 import hashlib
 import os
 import uuid
@@ -49,7 +50,7 @@ contestant_parser.add_argument('launch_number', type=int, required=True, locatio
 class ContestantResource(Resource):
 
     def post(self):
-        now_dt = datetime.now()
+        now_dt = datetime.now(timezone('Asia/Seoul'))
 
         calender_check = db.session \
             .query(CalenderModel) \
