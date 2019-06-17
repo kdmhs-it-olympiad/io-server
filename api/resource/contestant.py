@@ -1,3 +1,4 @@
+from datetime import datetime
 import hashlib
 import os
 import uuid
@@ -7,6 +8,7 @@ from flask_restful import abort, reqparse, Resource
 
 from api import server
 from api.model.contestant import ContestantModel
+from api.model.calender import CalenderModel
 
 from config import config
 
@@ -31,7 +33,7 @@ contestant_parser.add_argument('name', type=max_length(16), required=True, locat
 contestant_parser.add_argument('gender', type=str, required=True, location='form')
 contestant_parser.add_argument('birth', required=True)
 contestant_parser.add_argument('agent_phone', type=max_length(16), required=True, location='form')
-contestant_parser.add_argument('phone', type=max_length(16), required=True, location='form')
+contestant_parser.add_argument('phone', type=max_length(16), required=False, location='form')
 contestant_parser.add_argument('school', type=max_length(64), required=False, location='form')
 contestant_parser.add_argument('grade', type=int, required=False, location='form')
 contestant_parser.add_argument('klass', type=int, required=False, location='form')
@@ -47,6 +49,15 @@ contestant_parser.add_argument('launch_number', type=int, required=True, locatio
 class ContestantResource(Resource):
 
     def post(self):
+        now_dt = datetime.now()
+
+        calender_check = db.session \
+            .query(CalenderModel) \
+            .filter(now_dt >= CalenderModel.begin, now_dt <= CalenderModel.end, CalenderModel.status == 'applying') \
+            .first()
+        if calender_check is None:
+            abort(406, message='It is not time to apply.')
+
         args = contestant_parser.parse_args()
 
         contestant_check = db.session \
