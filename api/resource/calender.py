@@ -11,6 +11,7 @@ calender_fileds = {
     'id': fields.Integer,
     'begin': fields.DateTime,
     'end': fields.DateTime,
+    'status': fields.String,
     'context': fields.String
 }
 
