@@ -11,4 +11,4 @@ app = server.flask_app
 api = server.flask_api
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
