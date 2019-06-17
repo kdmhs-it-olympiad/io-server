@@ -15,7 +15,7 @@ class ContestantModel(db.Model):
 
     agent_phone = Column(db.String(16), nullable=False)
 
-    phone = Column(db.String(16), nullable=False)
+    phone = Column(db.String(16), nullable=True)
 
     school = Column(db.String(64), nullable=True)
 
