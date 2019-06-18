@@ -20,6 +20,8 @@ api = server.flask_api
 ALLOWED_FILE_EXTENSOIN = ['image/jpeg', 'image/png', 'image/gif']
 MAX_PHOTO_SIZE = 5242880
 
+PHOTO_FILE_PATH = '/photo/'
+
 
 def max_length(max_length):
     def validate(s):
@@ -141,8 +143,8 @@ class ContestantResource(Resource):
         password_hash = password_hash.hexdigest()
 
         if contestant.password != password_hash:
-            abort(401, 'Wrong password.')
+            abort(401, message='Wrong password.')
 
-        contestant.photo = '/{}/{}'.format(config.STATIC_FILE_PATH, contestant.photo)
+        contestant.photo = '{}{}'.format(PHOTO_FILE_PATH, contestant.photo)
 
         return contestant
