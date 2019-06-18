@@ -143,6 +143,6 @@ class ContestantResource(Resource):
         if contestant.password != password_hash:
             abort(401, 'Wrong password.')
 
-        contestant.photo = '{}/{}/{}'.format(config.SERVER_URL, config.STATIC_FILE_PATH, contestant.photo)
+        contestant.photo = '/{}/{}'.format(config.STATIC_FILE_PATH, contestant.photo)
 
         return contestant
