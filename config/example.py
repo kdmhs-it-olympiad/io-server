@@ -7,3 +7,7 @@ DB_ADDRESS = ''
 
 # --- file
 STATIC_FILE_PATH = ''
+
+
+# --- Server
+SERVER_URL = ''
