@@ -5,7 +5,7 @@ import os
 import uuid
 import werkzeug
 
-from flask_restful import abort, reqparse, Resource
+from flask_restful import abort, fields, reqparse, Resource, marshal_with
 
 from api import server
 from api.model.contestant import ContestantModel
@@ -29,22 +29,39 @@ def max_length(max_length):
     return validate
 
 
-contestant_parser = reqparse.RequestParser()
-contestant_parser.add_argument('name', type=max_length(16), required=True, location='form')
-contestant_parser.add_argument('gender', type=str, required=True, location='form')
-contestant_parser.add_argument('birth', required=True)
-contestant_parser.add_argument('agent_phone', type=max_length(16), required=True, location='form')
-contestant_parser.add_argument('phone', type=max_length(16), required=False, location='form')
-contestant_parser.add_argument('school', type=max_length(64), required=False, location='form')
-contestant_parser.add_argument('grade', type=int, required=False, location='form')
-contestant_parser.add_argument('klass', type=int, required=False, location='form')
-contestant_parser.add_argument('zip_code', type=max_length(8), required=True, location='form')
-contestant_parser.add_argument('address', type=max_length(128), required=True, location='form')
-contestant_parser.add_argument('detail_address', type=max_length(128), required=True, location='form')
-contestant_parser.add_argument('sector', type=str, required=True, location='form')
-contestant_parser.add_argument('photo', type=werkzeug.datastructures.FileStorage, location='files', required=True)
-contestant_parser.add_argument('password', type=str, required=True, location='form')
-contestant_parser.add_argument('launch_number', type=int, required=True, location='form')
+contestant_post_parser = reqparse.RequestParser()
+contestant_post_parser.add_argument('name', type=max_length(16), required=True, location='form')
+contestant_post_parser.add_argument('gender', type=str, required=True, location='form')
+contestant_post_parser.add_argument('birth', required=True)
+contestant_post_parser.add_argument('agent_phone', type=max_length(16), required=True, location='form')
+contestant_post_parser.add_argument('phone', type=max_length(16), required=False, location='form')
+contestant_post_parser.add_argument('school', type=max_length(64), required=False, location='form')
+contestant_post_parser.add_argument('grade', type=int, required=False, location='form')
+contestant_post_parser.add_argument('klass', type=int, required=False, location='form')
+contestant_post_parser.add_argument('zip_code', type=max_length(8), required=True, location='form')
+contestant_post_parser.add_argument('address', type=max_length(128), required=True, location='form')
+contestant_post_parser.add_argument('detail_address', type=max_length(128), required=True, location='form')
+contestant_post_parser.add_argument('sector', type=str, required=True, location='form')
+contestant_post_parser.add_argument('photo', type=werkzeug.datastructures.FileStorage, location='files', required=True)
+contestant_post_parser.add_argument('password', type=str, required=True, location='form')
+contestant_post_parser.add_argument('launch_number', type=int, required=True, location='form')
+
+contestant_get_parser = reqparse.RequestParser()
+contestant_get_parser.add_argument('agent_phone', type=str, required=True, location='args')
+contestant_get_parser.add_argument('password', type=str, required=True, location='args')
+
+contestant_fields = {
+    'id': fields.Integer,
+    'name': fields.String,
+    'gender': fields.String,
+    'agent_phone': fields.String,
+    'phone': fields.String,
+    'school': fields.String,
+    'grade': fields.Integer,
+    'klass': fields.Integer,
+    'sector': fields.String,
+    'photo': fields.String
+}
 
 
 class ContestantResource(Resource):
@@ -59,7 +76,7 @@ class ContestantResource(Resource):
         if calender_check is None:
             abort(406, message='It is not time to apply.')
 
-        args = contestant_parser.parse_args()
+        args = contestant_post_parser.parse_args()
 
         contestant_check = db.session \
             .query(ContestantModel) \
@@ -106,3 +123,26 @@ class ContestantResource(Resource):
         db.session.commit()
 
         return {'status': 'ok'}
+
+    @marshal_with(contestant_fields)
+    def get(self):
+        args = contestant_get_parser.parse_args()
+
+        contestant = db.session \
+            .query(ContestantModel) \
+            .filter(ContestantModel.agent_phone == args.agent_phone) \
+            .first()
+
+        if contestant is None:
+            abort(404, message='Not Founded agent_phone number.')
+
+        password_hash = hashlib.sha256()
+        password_hash.update(args.password.encode())
+        password_hash = password_hash.hexdigest()
+
+        if contestant.password != password_hash:
+            abort(401, 'Wrong password.')
+
+        contestant.photo = '{}/{}/{}'.format(config.SERVER_URL, config.STATIC_FILE_PATH, contestant.photo)
+
+        return contestant
