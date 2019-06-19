@@ -197,4 +197,6 @@ class ContestantResource(Resource):
             .filter(ContestantModel.agent_phone == args.agent_phone) \
             .update({'photo': args.photo.filename}, synchronize_session=False)
 
+        db.session.commit()
+
         return {'photo': '{}{}'.format(PHOTO_FILE_PATH, args.photo.filename)}
