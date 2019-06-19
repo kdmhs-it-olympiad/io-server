@@ -31,7 +31,7 @@ class ContestantModel(db.Model):
 
     sector = Column(ENUM('programming', 'design', 'business'), nullable=False)
 
-    photo = Column(db.String(64), nullable=False)
+    photo = Column(db.String(64), nullable=True)
 
     password = Column(db.String(256), nullable=False)
 
