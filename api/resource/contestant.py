@@ -150,7 +150,8 @@ class ContestantResource(Resource):
         if contestant.password != password_hash:
             abort(401, message='Wrong password.')
 
-        contestant.photo = '{}{}'.format(PHOTO_FILE_PATH, contestant.photo)
+        if contestant.photo is not None:
+            contestant.photo = '{}{}'.format(PHOTO_FILE_PATH, contestant.photo)
 
         return contestant
 
