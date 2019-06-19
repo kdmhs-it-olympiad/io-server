@@ -52,6 +52,11 @@ contestant_get_parser = reqparse.RequestParser()
 contestant_get_parser.add_argument('agent_phone', type=str, required=True, location='args')
 contestant_get_parser.add_argument('password', type=str, required=True, location='args')
 
+contestant_patch_parser = reqparse.RequestParser()
+contestant_patch_parser.add_argument('photo', type=werkzeug.datastructures.FileStorage, location='files', required=True)
+contestant_patch_parser.add_argument('agent_phone', type=str, required=True, location='form')
+contestant_patch_parser.add_argument('password', type=str, required=True, location='form')
+
 contestant_fields = {
     'id': fields.Integer,
     'name': fields.String,
@@ -148,3 +153,48 @@ class ContestantResource(Resource):
         contestant.photo = '{}{}'.format(PHOTO_FILE_PATH, contestant.photo)
 
         return contestant
+
+    def patch(self):
+        now_dt = datetime.now(timezone('Asia/Seoul'))
+
+        calender_check = db.session \
+            .query(CalenderModel) \
+            .filter(now_dt >= CalenderModel.begin, now_dt <= CalenderModel.end, CalenderModel.status == 'applying') \
+            .first()
+        if calender_check is None:
+            abort(406, message='It is not time to apply.')
+
+        args = contestant_patch_parser.parse_args()
+
+        contestant = db.session \
+            .query(ContestantModel) \
+            .filter(ContestantModel.agent_phone == args.agent_phone) \
+            .first()
+
+        if contestant is None:
+            abort(404, message='Not Founded agent_phone number.')
+
+        password_hash = hashlib.sha256()
+        password_hash.update(args.password.encode())
+        password_hash = password_hash.hexdigest()
+
+        if contestant.password != password_hash:
+            abort(401, message='Wrong password.')
+
+        if args.photo.content_type not in ALLOWED_FILE_EXTENSOIN:
+            abort(400, message='Only png and jpg photos can be uploaded.')
+
+        args.photo.seek(0, os.SEEK_END)
+        if args.photo.tell() > MAX_PHOTO_SIZE:
+            abort(413, message='The photo is too large.')
+
+        args.photo.seek(0)
+        args.photo.filename = '{}.{}'.format(str(uuid.uuid4()), args.photo.content_type.split('/')[-1])
+        args.photo.save('{}/{}'.format(config.STATIC_FILE_PATH, args.photo.filename))
+
+        db.session \
+            .query(ContestantModel) \
+            .filter(ContestantModel.agent_phone == args.agent_phone) \
+            .update({'photo': args.photo.filename}, synchronize_session=False)
+
+        return {'photo': '{}{}'.format(PHOTO_FILE_PATH, args.photo.filename)}
