@@ -10,9 +10,9 @@ class QaModel(db.Model):
 
     email = Column(db.String(32), nullable=False)
 
-    title = Column(db.String(256), nullable=False)
+    question = Column(db.Text, nullable=False)
 
-    context = Column(db.Text, nullable=False)
+    answer = Column(db.Text, nullable=True)
 
     create_datetime = Column(db.DateTime, nullable=False)
 
