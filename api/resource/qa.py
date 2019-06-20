@@ -33,6 +33,9 @@ qa_list_get_parser = reqparse.RequestParser()
 qa_list_get_parser.add_argument('count', type=int, required=True)
 qa_list_get_parser.add_argument('offset', type=int, required=True)
 
+qa_patch_parser = reqparse.RequestParser()
+qa_patch_parser.add_argument('answer', type=str, required=True, location='form')
+
 qa_fields = {
     'id': fields.Integer,
     'name': fields.String,
@@ -96,3 +99,20 @@ class QaResource(Resource):
         qa.create_datetime = dt_to_str(qa.create_datetime)
 
         return qa
+
+    def patch(self, id):
+        args = qa_patch_parser.parse_args()
+
+        qa = db.session \
+            .query(QaModel) \
+            .filter(QaModel.id == id) \
+            .first()
+
+        if qa is None:
+            abort(404, 'The article is not found.')
+
+        qa.answer = args.answer
+
+        db.session.commit()
+
+        return {'status': 'ok'}
