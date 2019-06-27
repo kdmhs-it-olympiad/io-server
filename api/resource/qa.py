@@ -2,6 +2,7 @@ from datetime import datetime
 from pytz import timezone
 
 from flask_restful import abort, fields, reqparse, Resource, marshal_with
+from flask_jwt_extended import jwt_optional, get_jwt_identity
 
 from api import server
 from api.model.qa import QaModel
@@ -66,12 +67,19 @@ class QaListResource(Resource):
         return {'status': 'ok'}
 
     @marshal_with(qa_list_fields)
+    @jwt_optional
     def get(self):
+        admin = get_jwt_identity()
         args = qa_list_get_parser.parse_args()
 
         qa_list = db.session \
             .query(QaModel) \
             .filter(QaModel.is_visable.is_(True)) \
+
+        if not admin:
+            qa_list = qa_list.filter(QaModel.answer.isnot(None))
+
+        qa_list = qa_list \
             .limit(args.count) \
             .offset(args.offset) \
             .all()

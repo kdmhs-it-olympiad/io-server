@@ -16,3 +16,4 @@ def init_extensions(app):
 __import__('api.model.calender')
 __import__('api.model.contestant')
 __import__('api.model.qa')
+__import__('api.model.admin_account')

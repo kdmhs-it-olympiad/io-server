@@ -18,6 +18,7 @@ werkzeug = "*"
 gunicorn = "*"
 flask-cors = "*"
 pytz = "*"
+flask-jwt-extended = "*"
 
 [requires]
 python_version = "3.7"
