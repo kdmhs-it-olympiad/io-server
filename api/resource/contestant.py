@@ -6,6 +6,7 @@ import uuid
 import werkzeug
 
 from flask_restful import abort, fields, reqparse, Resource, marshal_with
+from flask_jwt_extended import jwt_required
 
 from api import server
 from api.model.contestant import ContestantModel
@@ -60,15 +61,21 @@ contestant_patch_parser.add_argument('password', type=str, required=True, locati
 contestant_fields = {
     'id': fields.Integer,
     'name': fields.String,
+    'birth': fields.String,
     'gender': fields.String,
     'agent_phone': fields.String,
     'phone': fields.String,
     'school': fields.String,
     'grade': fields.Integer,
     'klass': fields.Integer,
+    'address': fields.String,
+    'detail_address': fields.String,
     'sector': fields.String,
-    'photo': fields.String
+    'photo': fields.String,
+    'launch_number': fields.Integer
 }
+
+contestant_list_fields = {'contestant': fields.Nested(contestant_fields)}
 
 
 class ContestantResource(Resource):
@@ -201,3 +208,15 @@ class ContestantResource(Resource):
         db.session.commit()
 
         return {'photo': '{}{}'.format(PHOTO_FILE_PATH, args.photo.filename)}
+
+
+class ContestantListResource(Resource):
+
+    @marshal_with(contestant_list_fields)
+    @jwt_required
+    def get(self):
+        contestant_list = db.session \
+            .query(ContestantModel) \
+            .all()
+        return {'contestant': contestant_list}
+

@@ -11,7 +11,7 @@ class ContestantModel(db.Model):
 
     gender = Column(ENUM('male', 'female'), nullable=False)
 
-    birth = Column(db.DateTime, nullable=False)
+    birth = Column(db.Date, nullable=False)
 
     agent_phone = Column(db.String(16), nullable=False)
 
