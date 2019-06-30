@@ -2,7 +2,7 @@ from datetime import datetime
 from pytz import timezone
 
 from flask_restful import abort, fields, reqparse, Resource, marshal_with
-from flask_jwt_extended import jwt_optional, get_jwt_identity
+from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
 
 from api import server
 from api.model.qa import QaModel
@@ -95,6 +95,7 @@ class QaListResource(Resource):
 class QaResource(Resource):
 
     @marshal_with(qa_fields)
+    @jwt_required
     def get(self, id):
         qa = db.session \
             .query(QaModel) \
@@ -102,12 +103,13 @@ class QaResource(Resource):
             .first()
 
         if qa is None:
-            abort(404, 'The article is not found.')
+            abort(404, message='The article is not found.')
 
         qa.create_datetime = dt_to_str(qa.create_datetime)
 
         return qa
 
+    @jwt_required
     def patch(self, id):
         args = qa_patch_parser.parse_args()
 
@@ -117,7 +119,7 @@ class QaResource(Resource):
             .first()
 
         if qa is None:
-            abort(404, 'The article is not found.')
+            abort(404, message='The article is not found.')
 
         qa.answer = args.answer
 
