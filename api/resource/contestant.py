@@ -21,8 +21,6 @@ api = server.flask_api
 ALLOWED_FILE_EXTENSOIN = ['image/jpeg', 'image/png', 'image/gif']
 MAX_PHOTO_SIZE = 5242880
 
-PHOTO_FILE_PATH = '/photo/'
-
 
 def max_length(max_length):
     def validate(s):
@@ -47,7 +45,7 @@ contestant_post_parser.add_argument('detail_address', type=max_length(128), requ
 contestant_post_parser.add_argument('sector', type=str, required=True, location='form')
 contestant_post_parser.add_argument('photo', type=werkzeug.datastructures.FileStorage, location='files', required=True)
 contestant_post_parser.add_argument('password', type=str, required=True, location='form')
-contestant_post_parser.add_argument('launch_number', type=int, required=True, location='form')
+contestant_post_parser.add_argument('lunch_number', type=int, required=True, location='form')
 
 contestant_get_parser = reqparse.RequestParser()
 contestant_get_parser.add_argument('agent_phone', type=str, required=True, location='args')
@@ -72,7 +70,7 @@ contestant_fields = {
     'detail_address': fields.String,
     'sector': fields.String,
     'photo': fields.String,
-    'launch_number': fields.Integer
+    'lunch_number': fields.Integer
 }
 
 contestant_list_fields = {'contestant': fields.Nested(contestant_fields)}
@@ -130,7 +128,7 @@ class ContestantResource(Resource):
             sector=args.sector,
             photo=args.photo.filename,
             password=password_hash,
-            launch_number=args.launch_number
+            lunch_number=args.lunch_number
         )
 
         db.session.add(contestant)
@@ -156,9 +154,6 @@ class ContestantResource(Resource):
 
         if contestant.password != password_hash:
             abort(401, message='Wrong password.')
-
-        if contestant.photo is not None:
-            contestant.photo = '{}{}'.format(PHOTO_FILE_PATH, contestant.photo)
 
         return contestant
 
@@ -207,7 +202,7 @@ class ContestantResource(Resource):
 
         db.session.commit()
 
-        return {'photo': '{}{}'.format(PHOTO_FILE_PATH, args.photo.filename)}
+        return {'photo': args.photo.filename}
 
 
 class ContestantListResource(Resource):

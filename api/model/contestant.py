@@ -35,4 +35,4 @@ class ContestantModel(db.Model):
 
     password = Column(db.String(256), nullable=False)
 
-    launch_number = Column(db.Integer, nullable=False)
+    lunch_number = Column(db.Integer, nullable=False)
