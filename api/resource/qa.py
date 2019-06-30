@@ -31,8 +31,8 @@ qa_list_post_parser.add_argument('question', type=str, required=True, location='
 
 
 qa_list_get_parser = reqparse.RequestParser()
-qa_list_get_parser.add_argument('count', type=int, required=True)
-qa_list_get_parser.add_argument('offset', type=int, required=True)
+qa_list_get_parser.add_argument('count', type=int, required=False)
+qa_list_get_parser.add_argument('offset', type=int, required=False)
 
 qa_patch_parser = reqparse.RequestParser()
 qa_patch_parser.add_argument('answer', type=str, required=True, location='form')
@@ -72,17 +72,21 @@ class QaListResource(Resource):
         admin = get_jwt_identity()
         args = qa_list_get_parser.parse_args()
 
+        if args.count is None:
+            args.count = 10
+        if args.offset is None:
+            args.offset = 0
+
         qa_list = db.session \
             .query(QaModel) \
             .filter(QaModel.is_visable.is_(True)) \
 
         if not admin:
-            qa_list = qa_list.filter(QaModel.answer.isnot(None))
+            qa_list = qa_list.filter(QaModel.answer.isnot(None)) \
+                             .limit(args.count) \
+                             .offset(args.offset)
 
-        qa_list = qa_list \
-            .limit(args.count) \
-            .offset(args.offset) \
-            .all()
+        qa_list = qa_list.all()
 
         qa_list_str = []
         for i in qa_list:
