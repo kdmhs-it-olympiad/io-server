@@ -21,7 +21,7 @@ def max_length(max_length):
 
 
 def dt_to_str(dt):
-    return dt.strftime('%Y년 %m월%d일 %H:%M')
+    return dt.strftime('%Y-%m-%d %H:%M')
 
 
 qa_list_post_parser = reqparse.RequestParser()
