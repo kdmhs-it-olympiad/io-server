@@ -13,7 +13,6 @@ class CalenderModel(db.Model):
 
     end = Column(db.DateTime, nullable=False)
 
-    status = Column(ENUM('applying', 'design_1st_submitting', 'design_1st_announcing', 'waiting_for_contest',
-                         'contesting', 'final_submitting', 'end'))
+    status = Column(db.String(64), nullable=False)
 
     visable = Column(db.Boolean, nullable=False)

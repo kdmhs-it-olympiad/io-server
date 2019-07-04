@@ -162,10 +162,10 @@ class ContestantResource(Resource):
 
         calender_check = db.session \
             .query(CalenderModel) \
-            .filter(now_dt >= CalenderModel.begin, now_dt <= CalenderModel.end, CalenderModel.status == 'applying') \
+            .filter(now_dt >= CalenderModel.begin, now_dt <= CalenderModel.end, CalenderModel.status == 'upload_photo') \
             .first()
         if calender_check is None:
-            abort(406, message='It is not time to apply.')
+            abort(406, message='It is not time to upload photo.')
 
         args = contestant_patch_parser.parse_args()
 
