@@ -168,4 +168,3 @@ class AssignmentResource(Resource):
         db.session.commit()
 
         return {'assignment': contestant.assignment[0].file}
-
