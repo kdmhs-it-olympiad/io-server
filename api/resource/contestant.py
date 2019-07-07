@@ -107,7 +107,7 @@ class ContestantResource(Resource):
 
         args.photo.seek(0)
         args.photo.filename = '{}.{}'.format(str(uuid.uuid4()), args.photo.content_type.split('/')[-1])
-        args.photo.save('{}/{}'.format(config.STATIC_FILE_PATH, args.photo.filename))
+        args.photo.save('{}/{}/{}'.format(config.STATIC_FILE_PATH, 'photo', args.photo.filename))
 
         password_hash = hashlib.sha256()
         password_hash.update(args.password.encode())

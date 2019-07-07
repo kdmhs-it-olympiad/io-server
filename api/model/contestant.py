@@ -1,38 +1,37 @@
-from sqlalchemy.schema import Column
 from sqlalchemy.dialects.mysql import ENUM
 
 from api.model import db
 
 
 class ContestantModel(db.Model):
-    id = Column(db.Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
 
-    name = Column(db.String(16), nullable=False)
+    name = db.Column(db.String(16), nullable=False)
 
-    gender = Column(ENUM('male', 'female'), nullable=False)
+    gender = db.Column(ENUM('male', 'female'), nullable=False)
 
-    birth = Column(db.Date, nullable=False)
+    birth = db.Column(db.Date, nullable=False)
 
-    agent_phone = Column(db.String(16), nullable=False)
+    agent_phone = db.Column(db.String(16), nullable=False)
 
-    phone = Column(db.String(16), nullable=True)
+    phone = db.Column(db.String(16), nullable=True)
 
-    school = Column(db.String(64), nullable=True)
+    school = db.Column(db.String(64), nullable=True)
 
-    grade = Column(db.Integer, nullable=True)
+    grade = db.Column(db.Integer, nullable=True)
 
-    klass = Column(db.Integer, nullable=True)
+    klass = db.Column(db.Integer, nullable=True)
 
-    zip_code = Column(db.String(8), nullable=False)
+    zip_code = db.Column(db.String(8), nullable=False)
 
-    address = Column(db.String(128), nullable=False)
+    address = db.Column(db.String(128), nullable=False)
 
-    detail_address = Column(db.String(128), nullable=False)
+    detail_address = db.Column(db.String(128), nullable=False)
 
-    sector = Column(ENUM('programming', 'design', 'business'), nullable=False)
+    sector = db.Column(ENUM('programming', 'design', 'business'), nullable=False)
 
-    photo = Column(db.String(64), nullable=True)
+    photo = db.Column(db.String(64), nullable=True)
 
-    password = Column(db.String(256), nullable=False)
+    password = db.Column(db.String(256), nullable=False)
 
-    lunch_number = Column(db.Integer, nullable=False)
+    lunch_number = db.Column(db.Integer, nullable=False)
