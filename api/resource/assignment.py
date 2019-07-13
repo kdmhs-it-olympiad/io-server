@@ -20,7 +20,7 @@ api = server.flask_api
 MAX_FILE_SIZE = 100000000
 ALLOWED_FILE_EXTENSOIN = {
     'design': ['image/png', 'image/jpg', 'image/jpeg', 'application/zip'],
-    'business': ['application/x-hwp', 'application/haansofthwp', 'application/vnd.hancom.hwp', 'application/pdf']
+    'business': ['application/x-hwp', 'application/haansofthwp', 'application/vnd.hancom.hwp', 'application/pdf', 'application/octet-stream']
 }
 
 assignment_post_parser = reqparse.RequestParser()
@@ -50,6 +50,7 @@ class AssignmentResource(Resource):
 
         args = assignment_post_parser.parse_args()
 
+        print(args.assignment.content_type)
         contestant = db.session \
             .query(ContestantModel) \
             .filter(ContestantModel.agent_phone == args.agent_phone) \
