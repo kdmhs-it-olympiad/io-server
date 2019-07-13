@@ -69,6 +69,9 @@ class AssignmentResource(Resource):
         if contestant.sector == 'programming':
             abort(406, message='Programming sector can not submit assignments.')
 
+        if contestant.sector == 'design':
+            abort(406, message='Design sector submit assignments to email.')
+
         if args.assignment.content_type not in ALLOWED_FILE_EXTENSOIN[contestant.sector]:
             abort(400, message='Only {} photos can be uploaded.'.format(ALLOWED_FILE_EXTENSOIN[contestant.sector]))
 

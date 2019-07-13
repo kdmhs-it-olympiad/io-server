@@ -80,6 +80,7 @@ class QaListResource(Resource):
         qa_list = db.session \
             .query(QaModel) \
             .filter(QaModel.is_visable.is_(True)) \
+            .order_by(QaModel.id.desc())
 
         if not admin:
             qa_list = qa_list.filter(QaModel.answer.isnot(None)) \
