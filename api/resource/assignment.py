@@ -19,8 +19,8 @@ api = server.flask_api
 
 MAX_FILE_SIZE = 100000000
 ALLOWED_FILE_EXTENSOIN = {
-    'design': ['image/png', 'image/jpg', 'image/jpeg'],
-    'business': ['hwp', 'pdf']
+    'design': ['image/png', 'image/jpg', 'image/jpeg', 'application/zip'],
+    'business': ['application/x-hwp', 'application/haansofthwp', 'application/vnd.hancom.hwp', 'application/pdf']
 }
 
 assignment_post_parser = reqparse.RequestParser()
