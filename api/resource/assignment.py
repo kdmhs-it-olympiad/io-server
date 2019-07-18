@@ -6,6 +6,7 @@ import uuid
 import werkzeug
 
 from flask_restful import abort, fields, reqparse, Resource, marshal_with
+from flask_jwt_extended import jwt_required
 
 from api import server
 from api.model.calender import CalenderModel
@@ -170,5 +171,21 @@ class AssignmentResource(Resource):
         contestant.assignment[0].file = args.assignment.filename
 
         db.session.commit()
+
+        return {'assignment': contestant.assignment[0].file}
+
+
+class AssignmentListResource(Resource):
+    @jwt_required
+    def get(self):
+        contestant = db.session \
+            .query(ContestantModel) \
+            .all()
+
+        if contestant is None:
+            abort(404, message='Not Founded contestant.')
+
+        if contestant.assignment == []:
+            return {'assignment': None}
 
         return {'assignment': contestant.assignment[0].file}

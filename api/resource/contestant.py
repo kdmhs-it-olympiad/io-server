@@ -70,7 +70,8 @@ contestant_fields = {
     'detail_address': fields.String,
     'sector': fields.String,
     'photo': fields.String,
-    'lunch_number': fields.Integer
+    'lunch_number': fields.Integer,
+    'ticket_number': fields.Integer
 }
 
 contestant_list_fields = {'contestant': fields.Nested(contestant_fields)}
@@ -155,6 +156,8 @@ class ContestantResource(Resource):
         if contestant.password != password_hash:
             abort(401, message='Wrong password.')
 
+        if contestant.ticket != []:
+            contestant.ticket_number = contestant.ticket[0].ticket_number
         return contestant
 
     def patch(self):
